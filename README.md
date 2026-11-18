@@ -1,6 +1,6 @@
 # QA Engineering Portfolio
 
-A practical portfolio documenting my learning and hands-on experience in Software Quality Assurance, covering manual testing, API testing, test automation, and application security testing.
+A practical portfolio documenting my hands-on learning and experience in Software Quality Assurance, including manual testing, API and database testing, and test automation.
 
 ## Testing Disciplines
 
@@ -8,9 +8,11 @@ A practical portfolio documenting my learning and hands-on experience in Softwar
 
 - Test planning and test case design
 - Functional testing
+- Positive and negative testing
 - Exploratory testing
 - Defect identification and reporting
-- Test execution and evidence documentation
+
+**[Explore Manual Testing Portfolio](manual-testing/README.md)**
 
 ### 2. API and Database Testing
 
@@ -20,21 +22,18 @@ A practical portfolio documenting my learning and hands-on experience in Softwar
 - SQL and PostgreSQL validation
 - API and database consistency testing
 
+**[Explore API Testing Portfolio](api-testing/README.md)**
+
 ### 3. Test Automation
 
 - Python and Pytest
 - Playwright browser automation
 - Pytest fixtures and parameterization
 - Browser context isolation
-- UI regression testing
+- UI login testing
+- API authorization testing
 
-### 4. API Security Testing
-
-- Authentication and authorization testing
-- Broken access control
-- Insecure Direct Object Reference (IDOR)
-- Input validation
-- Sensitive information disclosure
+**[Explore Playwright Automation](automation/playwright/)**
 
 ## Technology Stack
 
@@ -46,29 +45,33 @@ A practical portfolio documenting my learning and hands-on experience in Softwar
 - SQL
 - Git and GitHub
 
-## Current Automation Results
+## Selected Automation Coverage
 
-The Playwright and Flask testing project currently contains:
+The automation project includes test coverage for:
 
-- 16 API authorization and security test executions
-- 1 browser context isolation test
-- 5 UI login test executions
+- UI login scenarios, including valid, invalid, and locked-out users
+- Browser context isolation
+- API authorization, including access control between users and unauthenticated access
 
-**Total: 22 passing test executions.**
+Test results are documented separately within the relevant project materials. Counts are not combined here to avoid presenting results from different suites as a single execution.
 
 ## Repository Structure
 
 ```text
-manual-testing/
-api-testing/
-automation/
-security-testing/
-docs/
+qa-engineering-portfolio/
+├── manual-testing/
+│   └── sauce-demo/
+├── api-testing/
+│   ├── database-validation/
+│   └── postman/
+├── automation/
+    └── playwright/
+
 ```
 
 ## Project Purpose
 
-This repository documents practical QA exercises, testing methodologies, implementation decisions, test results, and continuous learning.
+This repository demonstrates practical QA skills through test planning, test execution, automation, defect documentation, and validation of application behavior.
 
 All testing activities are performed on intentionally created projects or authorized testing environments.
 
