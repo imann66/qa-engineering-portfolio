@@ -1,0 +1,605 @@
+{
+  "info": {
+    "_postman_id": "5f1f6d51-9d00-476c-9e08-d9c03ee15d0d",
+    "name": "Task Management API - QA Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60218896",
+    "_collection_link": "https://go.postman.co/collection/60218896-5f1f6d51-9d00-476c-9e08-d9c03ee15d0d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "End-to-End CRUD Workflow",
+      "item": [
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Task is created successfully\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Response contains a task ID\", function () {\r\n    pm.expect(response.id).to.exist;\r\n});\r\n\r\npm.test(\"Task has the correct initial status\", function () {\r\n    pm.expect(response.status).to.eql(\"pending\");\r\n});\r\n\r\npm.collectionVariables.set(\"taskId\", response.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"E2E QA Test Task\",\n    \"description\": \"Testing the complete task lifecycle\",\n    \"status\": \"pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Created Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Task can be retrieved\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Retrieved task ID is correct\", function () {\r\n    pm.expect(response.id).to.eql(\r\n        Number(pm.collectionVariables.get(\"taskId\"))\r\n    );\r\n});\r\n\r\npm.test(\"Task title is correct\", function () {\r\n    pm.expect(response.title).to.eql(\"E2E QA Test Task\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Task is updated successfully\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Updated title is returned\", function () {\r\n    pm.expect(response.title).to.eql(\r\n        \"E2E QA Test Task - Updated\"\r\n    );\r\n});\r\n\r\npm.test(\"Updated status is returned\", function () {\r\n    pm.expect(response.status).to.eql(\"in_progress\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"E2E QA Test Task - Updated\",\r\n    \"status\": \"in_progress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Updated Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Updated task can be retrieved\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Updated title persists\", function () {\r\n    pm.expect(response.title).to.eql(\r\n        \"E2E QA Test Task - Updated\"\r\n    );\r\n});\r\n\r\npm.test(\"Updated status persists\", function () {\r\n    pm.expect(response.status).to.eql(\"in_progress\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Task is deleted successfully\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Deletion confirmation is returned\", function () {\r\n    pm.expect(response.message).to.eql(\r\n        \"Task deleted successfully.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Deleted Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Deleted task cannot be retrieved\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Correct error message is returned\", function () {\r\n    pm.expect(response.error).to.eql(\"Task not found.\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative & Boundary Tests",
+      "item": [
+        {
+          "name": "Create task with empty title",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API rejects invalid input\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error response contains an error message\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.be.a(\"string\");\r\n    pm.expect(response.error.length).to.be.greaterThan(0);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"\",\n    \"description\": \"Testing empty title\",\n    \"status\": \"pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Incorrect title data type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API rejects invalid input\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error response contains an error message\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.be.a(\"string\");\r\n    pm.expect(response.error.length).to.be.greaterThan(0);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": 12345,\n    \"description\": \"Testing invalid title type\",\n    \"status\": \"pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Title exceeds the maximum length",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API rejects invalid input\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error response contains an error message\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.be.a(\"string\");\r\n    pm.expect(response.error.length).to.be.greaterThan(0);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"description\": \"Testing title length validation\",\n    \"status\": \"pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid task status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API returns the correct validation error\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.eql(\"Invalid status.\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Test invalid status\",\n    \"description\": \"Testing invalid task status\",\n    \"status\": \"cancelled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update nonexistent task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API returns 404 for nonexistent task\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Correct error message is returned\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.eql(\"Task not found.\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Updated Nonexistent Task\",\n    \"status\": \"completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete nonexistent task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API returns 404 for nonexistent task\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Correct error message is returned\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.eql(\"Task not found.\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit malformed JSON",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API rejects malformed JSON\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Correct error message is returned\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error).to.eql(\r\n        \"Request body must be valid JSON.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Malformed JSON Test\",\n    \"description\": \"Testing invalid JSON syntax\",\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Database Testing",
+      "item": [
+        {
+          "name": "Verify API and database data consistency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/tasks/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "tasks",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify update API and database data consistency",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Learn API Testing - Updated\",\r\n    \"status\": \"in_progress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/tasks/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "tasks",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create task for delete",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Database Deletion Test\",\r\n    \"description\": \"Testing database deletion\",\r\n    \"status\": \"pending\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/tasks",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/tasks/8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "tasks",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send an invalid PATCH request",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"SHOULD NOT BE SAVED\",\r\n    \"status\": \"invalid_status\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/tasks/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "tasks",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "taskId",
+      "value": ""
+    }
+  ]
+}
